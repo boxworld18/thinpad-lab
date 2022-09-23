@@ -106,8 +106,73 @@ module lab3_top (
   /* =========== Demo code end =========== */
 
   // TODO: 内部信号声明
+  logic       trigger;
+  
+  reg  [ 4:0] rf_raddr_a;
+  reg  [ 4:0] rf_raddr_b;
+  wire [15:0] rf_rdata_a;
+  wire [15:0] rf_rdata_b;
+  reg  [ 4:0] rf_waddr;
+  wire [15:0] rf_wdata;
+  reg         rf_wen;
+
+  reg  [15:0] alu_a;
+  reg  [15:0] alu_b;
+  reg  [ 3:0] alu_op;
+  wire [15:0] alu_y;
 
   // TODO: 实验模块例化
+  button_in u_button_in (
+    .clk      (clk_10M),
+    .reset    (reset_of_clk10M),
+    .push_btn (push_btn),
+    .trigger  (trigger)
+    );
+
+  controller u_controller (
+    .clk   (clk_10M),
+    .reset (reset_of_clk10M),
+
+    // 连接寄存器堆模块的信号
+    .rf_raddr_a (rf_raddr_a),
+    .rf_rdata_a (rf_rdata_a),
+    .rf_raddr_b (rf_raddr_b),
+    .rf_rdata_b (rf_rdata_b),
+    .rf_waddr   (rf_waddr),
+    .rf_wdata   (rf_wdata),
+    .rf_wen     (rf_wen),
+
+    // 连接 ALU 模块的信号
+    .alu_a  (alu_a),
+    .alu_b  (alu_b),
+    .alu_op (alu_op),
+    .alu_y  (alu_y),
+
+    // 控制信号
+    .step   (trigger),    // 用户按键状态脉冲
+    .dip_sw (dip_sw),  // 32 位拨码开关状态
+    .leds   (leds)
+  );
+
+  alu u_alu (
+    .a  (alu_a),
+    .b  (alu_b),
+    .op (alu_op),
+    .y  (alu_y)
+  );
+
+  register_file u_register_file (
+    .clk     (clk_10M),
+    .reset   (reset_of_clk10M),
+    
+    .raddr_a (rf_raddr_a),
+    .rdata_a (rf_rdata_a),
+    .raddr_b (rf_raddr_b),
+    .rdata_b (rf_rdata_b),
+    .waddr   (rf_waddr),
+    .wdata   (rf_wdata),
+    .wen     (rf_wen)
+  );
 
 
 endmodule
