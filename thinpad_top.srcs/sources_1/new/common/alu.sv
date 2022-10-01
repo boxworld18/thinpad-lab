@@ -37,10 +37,10 @@ module alu(
       4'b0100: result = a | b;
       4'b0101: result = a ^ b;
       4'b0110: result = ~a;
-      4'b0111: result = a << b;
-      4'b1000: result = a >> b;
-      4'b1001: result = $signed(a) >>> b;
-      4'b1010: result = (a << b) + (a >> (16 - b));
+      4'b0111: result = a << (b & 15);
+      4'b1000: result = a >> (b & 15);
+      4'b1001: result = $signed(a) >>> (b & 15);
+      4'b1010: result = (a << (b & 15)) + (a >> (16 - (b & 15)));
       default: result = 16'b0;
     endcase
   end

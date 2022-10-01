@@ -39,7 +39,7 @@ module register_file(
     if (reset) begin
       register <= '{default:0};
     end else begin
-      if (wen) begin
+      if (wen && waddr != 0) begin
         register[waddr] <= wdata;
       end
     end
