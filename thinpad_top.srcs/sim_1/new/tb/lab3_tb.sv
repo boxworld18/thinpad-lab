@@ -59,7 +59,17 @@ module lab3_tb;
     for (int i = 1; i < 32; i = i + 1) begin
       #100;
       rd = i;   // only lower 5 bits
-      dip_sw = `inst_poke(rd, $urandom_range(0, 65536));
+      imm = $urandom_range(0, 65536);
+      dip_sw = `inst_poke(rd, imm);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #1000;
+
+      #100;
+      dip_sw = `inst_peek(rd, imm);
       push_btn = 1;
 
       #100;
@@ -69,6 +79,29 @@ module lab3_tb;
     end
 
     // TODO: 随机测试各种指令
+    for (int i = 1; i < 32; i = i + 1) begin
+      #100;
+      rd = 1;   // only lower 5 bits
+      rs1 = $urandom_range(0, 31);
+      rs2 = $urandom_range(0, 31);
+      opcode = $urandom_range(1, 10);
+      dip_sw = `inst_rtype(rd, rs1, rs2, opcode);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #1000;
+
+      #100;
+      dip_sw = `inst_peek(rd, 0);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #1000;
+    end
 
     #10000 $finish;
   end
