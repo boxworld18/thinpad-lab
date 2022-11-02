@@ -19,15 +19,17 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "param.svh"
 
 module alu(
-    input   reg  [15:0] a,
-    input   reg  [15:0] b,
-    input   reg  [ 3:0] op,
-    output  wire [15:0] y
+    input wire [CPU_DATA_WIDTH-1:0] a,
+    input wire [CPU_DATA_WIDTH-1:0] b,
+    input wire [ALU_CTRL_WIDTH-1:0] op,
+    output reg [CPU_DATA_WIDTH-1:0] y,
+    output reg zero
 );
 
-  reg [15:0] result;
+  reg [CPU_DATA_WIDTH-1:0] result;
 
   always_comb begin
     case (op)
@@ -41,10 +43,11 @@ module alu(
       4'b1000: result = a >> (b & 15);
       4'b1001: result = $signed(a) >>> (b & 15);
       4'b1010: result = (a << (b & 15)) + (a >> (16 - (b & 15)));
-      default: result = 16'b0;
+      default: result = 32'b0;
     endcase
   end
 
   assign y = result;
+  assign zero = (result == 32'b0);
 
 endmodule

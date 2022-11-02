@@ -59,7 +59,7 @@ module lab4_tb;
     push_btn = 1;
 
     // 等待一段时间，结束仿真
-    #10000 $finish;
+    #1000000 $finish;
   end
 
   // 待测试用户设计

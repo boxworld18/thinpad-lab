@@ -19,24 +19,25 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "param.svh"
 
 module register_file(
-    input wire clk,
-    input wire reset,
+  input wire clk_i,
+  input wire rst_i,
 
-    // 连接寄存器堆模块的信号
-    input  reg  [ 4:0] raddr_a,
-    output wire [15:0] rdata_a,
-    input  reg  [ 4:0] raddr_b,
-    output wire [15:0] rdata_b,
-    input  reg  [ 4:0] waddr,
-    input  reg  [15:0] wdata,
-    input  reg         wen
+  // 连接寄存器堆模块的信号
+  input wire [REG_ADDR_WIDTH-1:0] raddr_a,
+  input wire [REG_ADDR_WIDTH-1:0] raddr_b,
+  output reg [CPU_DATA_WIDTH-1:0] rdata_a,
+  output reg [CPU_DATA_WIDTH-1:0] rdata_b,
+  input wire [REG_ADDR_WIDTH-1:0] waddr,
+  input wire [CPU_DATA_WIDTH-1:0] wdata,
+  input wire wen
 );
-  logic [15:0] register [31:0];
+  logic [CPU_DATA_WIDTH-1:0] register [REG_FILE_DEPTH-1:0];
 
-  always_ff @(posedge clk) begin
-    if (reset) begin
+  always_ff @(posedge clk_i) begin
+    if (rst_i) begin
       register <= '{default:0};
     end else begin
       if (wen && waddr != 0) begin
